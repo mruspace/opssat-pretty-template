@@ -11,7 +11,9 @@
  *     speeds;
  *   - a time cap (--max-seconds) checked inside the tick loop, never slept
  *     past, so the program stops on time even if the host is slow;
- *   - a CPU share (--cpu-percent) kept by sleeping after each tick;
+ *   - a CPU share (--cpu-percent) kept by sleeping after each tick, by the
+ *     process's real CPU time, so the share holds on any host (the time
+ *     spent in system calls and in the sleeps themselves counts too);
  *   - a memory limit set by the process on itself (RLIMIT_AS);
  *   - SIGTERM and SIGINT end the run cleanly, with the summary written;
  *   - CPU time reported by phase (start-up, run, end), user and kernel apart.
@@ -53,6 +55,13 @@ static double now_s(void) {
 struct cpu {
     double user, sys;
 };
+
+/* The process's CPU time so far, user and kernel, in seconds. */
+static double cpu_s(void) {
+    struct timespec t;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
+    return (double)t.tv_sec + (double)t.tv_nsec / 1e9;
+}
 
 static struct cpu cpu_now(void) {
     struct rusage u;
@@ -179,6 +188,7 @@ int main(int argc, char **argv) {
     double deadline = t_start + (double)max_seconds;
     double t_run = now_s();
     struct cpu c_run = cpu_now();
+    double cpu_run = cpu_s();
 
     uint64_t state = seed, checksum = 0xcbf29ce484222325ULL;
     long done = 0;
@@ -196,10 +206,11 @@ int main(int argc, char **argv) {
         double t0 = now_s();
         checksum = tick(&state, block, checksum);
         done++;
-        double w = now_s() - t0;
-        work_s += w;
-        /* Keep the share: after w seconds of work, rest w * (100 / P - 1). */
-        sleep_until_at_most(w * (100.0 / (double)cpu_percent - 1.0), deadline);
+        work_s += now_s() - t0;
+        /* Keep the share: the CPU used since the run began may be at most
+         * P% of the wall time since then, so rest until that is true. */
+        double wake = t_run + (cpu_s() - cpu_run) * 100.0 / (double)cpu_percent;
+        sleep_until_at_most(wake - now_s(), deadline);
     }
 
     double t_end = now_s();

@@ -12,4 +12,4 @@ All notable changes to the OPS-SAT PRETTY experiment template. Versions follow [
 - `scripts/build-example.sh`, `scripts/package.sh`, `scripts/check-package.py`, `scripts/test-local.sh` (two runs in the same folder, in an Alpine armhf container or ESA's image), `scripts/check-results.py` (against a TOML prediction, reading ESA's result archives directly), `prediction.example.toml`.
 - Docs: the guide, the rules, testing, predictions, results, pitfalls, email templates, and the exp4051 timeline.
 - CI: shellcheck, tests of the package checker, the harness under sh, dash and busybox sh, and the full example on 32-bit ARM checked against its prediction.
-- Tested on October 29, 2026, in ESA's OPS-SAT PRETTY experiment environment image (v0.3) on a laptop under emulation: both runs exit 0 in 46 s, the same checksums as in the Alpine stand-in.
+- Tested on October 29, 2026, in ESA's OPS-SAT PRETTY experiment environment image (v0.3) on a laptop under emulation: both runs exit 0 (27 s and 41 s), the same checksums as in the Alpine stand-in, CPU share 5.00% in every step.

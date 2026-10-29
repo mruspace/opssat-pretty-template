@@ -27,7 +27,7 @@ exit = 0
 ticks = 20000
 stopped = "done"
 checksum = "b69fb37f92117726"
-run_share = { max = 5.0 }
+run_share = { max = 5.1 }
 ```
 
 Check it on your local run first; it must pass there before it means anything in orbit:

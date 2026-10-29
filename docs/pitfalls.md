@@ -20,7 +20,7 @@ Every item here happened to us on exp4051 in October 2026, or nearly did. Each h
 
 ### 5. CPU readings from emulation
 
-**What happened.** Our CPU estimates from emulation were wrong in both directions: on the SEPP our demo used more CPU than under emulation, and our F´ package far less. **Now.** Report CPU only as measured on the FlatSat or in orbit, with its scope. Log CPU time by phase (start-up, run, end; user and kernel apart), so a figure you did not expect can be placed.
+**What happened.** Our CPU estimates from emulation were wrong in both directions: on the SEPP our demo used more CPU than under emulation, and our F´ package far less. **Now.** Report CPU only as measured on the FlatSat or in orbit, with its scope. Log CPU time by phase (start-up, run, end; user and kernel apart), so a figure you did not expect can be placed. And keep a CPU share by the process's real CPU time, not by how long your work took: system calls and the sleeps themselves cost CPU too. The first version of this template's example kept the share by work time and read 7.5% for a 5% setting on an emulated CI runner; by CPU time it reads 5.00%.
 
 ### 6. A background entry point
 
