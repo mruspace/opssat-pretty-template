@@ -1,0 +1,31 @@
+# The prediction for the example package, written before the run.
+# Check what came down against it:
+#   scripts/check-results.py prediction.example.toml pack-NNNN_TIMESTAMP.tar.gz
+#
+# Predict what the code decides (counts, checksums, events), exactly. Give
+# ranges only for what the host decides (time, CPU share, memory), and say
+# why in a comment. See docs/prediction.md.
+
+[run]                          # the last line of run-info.txt
+status = 0
+seconds = { max = 270 }        # the budget; about 46 s in ESA's image on a laptop
+
+[steps.baseline]
+exit = 0
+
+[steps.second-seed]
+exit = 0
+
+[files."summary-baseline.txt"]
+ticks = 20000                  # all planned work done, not cut by the cap
+stopped = "done"
+checksum = "b69fb37f92117726"  # the same on every host: the work is in ticks
+run_share = { max = 5.0 }      # percent of one core, the share the package asks for
+max_rss = { max = 131072 }     # KiB, the 128 MB limit
+
+[files."summary-second-seed.txt"]
+ticks = 20000
+stopped = "done"
+checksum = "3518adb4844902b4"
+run_share = { max = 5.0 }
+max_rss = { max = 131072 }

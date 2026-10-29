@@ -1,0 +1,195 @@
+#!/bin/sh
+# run: the entry point of an experiment package for OPS-SAT PRETTY.
+#
+# ESA's runner unpacks the package into $HOME of user exp on the SEPP,
+# executes ./run there, waits for it, and sends down what changed under $HOME.
+# This script stays in the foreground, runs your steps one after the other,
+# stops each one at its cap, writes everything to toGround/, and exits well
+# inside the five-minute window.
+#
+# Edit only the section "Your experiment" at the bottom. The rest is the
+# harness: it records what ran (run-info.txt), stops what overruns, removes
+# state left by an earlier run, forwards a stop request, and leaves no
+# process behind.
+#
+# POSIX sh only: the SEPP image has busybox, no bash and no Python.
+#
+# Settings (environment variables, defaults in brackets):
+#   BUDGET_SECONDS   the whole run, start-up included       [270]
+#   GRACE_SECONDS    between SIGTERM and SIGKILL at a cap    [5]
+#   OUT_DIR          output folder, sent to ground           [./toGround]
+set -u
+
+here=$(cd "$(dirname "$0")" && pwd)
+cd "$here" || exit 2
+BUDGET_SECONDS=${BUDGET_SECONDS:-270}
+GRACE_SECONDS=${GRACE_SECONDS:-5}
+OUT_DIR=${OUT_DIR:-$here/toGround}
+
+now() { date -u '+%Y-%m-%dT%H:%M:%SZ'; }
+secs() { date +%s; }
+sha() { sha256sum "$1" 2>/dev/null | cut -d' ' -f1; }
+
+started=$(secs)
+status=0
+child=
+dog=
+
+# A folder left by an earlier run of the same package (the FlatSat and the
+# satellite can reuse $HOME) would mix old files into this run's results.
+# Its files were already sent down, so they are removed, and that is logged.
+stale=0
+if [ -d "$OUT_DIR" ]; then
+    stale=$(find "$OUT_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+    rm -rf "$OUT_DIR"
+fi
+mkdir -p "$OUT_DIR" || exit 2
+info=$OUT_DIR/run-info.txt
+
+{
+    echo "start_utc=$(now)"
+    echo "uname=$(uname -a 2>/dev/null)"
+    echo "user=$(id 2>/dev/null)"
+    echo "home=$HOME pwd=$here"
+    echo "nproc=$(nproc 2>/dev/null) loadavg=$(cat /proc/loadavg 2>/dev/null)"
+    echo "--- /proc/cpuinfo ---"
+    cat /proc/cpuinfo 2>/dev/null
+    echo "--- /proc/meminfo (head) ---"
+    head -5 /proc/meminfo 2>/dev/null
+    echo "--- package (sha256) ---"
+    for f in "$here"/*; do
+        [ -f "$f" ] && echo "$(basename "$f") $(sha "$f")"
+    done
+    echo "---"
+    echo "settings: budget_seconds=$BUDGET_SECONDS grace_seconds=$GRACE_SECONDS"
+    [ "$stale" -gt 0 ] && echo "removed $stale files left in toGround/ by an earlier run"
+} >"$info"
+
+# remove_state FILE...: delete files your experiment would resume from, so a
+# run never starts from the state of an earlier run by accident.
+# shellcheck disable=SC2329 # for your experiment section
+remove_state() {
+    for f in "$@"; do
+        if [ -e "$f" ]; then
+            rm -f "$f"
+            echo "removed state left by an earlier run: $f" >>"$info"
+        fi
+    done
+}
+
+# shellcheck disable=SC2329 # called by the trap below
+stop() {
+    # A stop request from the runner: pass it on, record it, exit cleanly.
+    [ -n "$dog" ] && kill "$dog" 2>/dev/null
+    if [ -n "$child" ]; then
+        kill -TERM "$child" 2>/dev/null
+        wait "$child" 2>/dev/null
+    fi
+    echo "stopped_by_signal_utc=$(now)" >>"$info"
+    exit 0
+}
+trap stop TERM INT HUP
+
+# watchdog PID CAP KILL_AT: stop PID at CAP seconds (SIGTERM, then SIGKILL
+# after the grace), or kill it at KILL_AT seconds when KILL_AT is not 0.
+# It checks once a second, so it ends at most a second after PID does and
+# leaves no sleeping process behind.
+watchdog() {
+    w_pid=$1 w_cap=$2 w_kill=$3 w_n=0
+    while kill -0 "$w_pid" 2>/dev/null; do
+        if [ "$w_kill" -gt 0 ] && [ "$w_n" -ge "$w_kill" ]; then
+            kill -KILL "$w_pid" 2>/dev/null
+            echo "$w_name: killed (SIGKILL) at $(now), as planned" >>"$info"
+            return
+        fi
+        if [ "$w_n" -ge "$w_cap" ]; then
+            kill -TERM "$w_pid" 2>/dev/null
+            echo "$w_name: reached its cap of $w_cap s at $(now), sent SIGTERM" >>"$info"
+            w_g=0
+            while kill -0 "$w_pid" 2>/dev/null && [ "$w_g" -lt "$GRACE_SECONDS" ]; do
+                sleep 1
+                w_g=$((w_g + 1))
+            done
+            if kill -0 "$w_pid" 2>/dev/null; then
+                kill -KILL "$w_pid" 2>/dev/null
+                echo "$w_name: still running after the grace, sent SIGKILL" >>"$info"
+            fi
+            return
+        fi
+        sleep 1
+        w_n=$((w_n + 1))
+    done
+}
+
+# run_step NAME CAP KILL_AT COMMAND...: the common part of step and step_kill.
+run_step() {
+    w_name=$1 s_cap=$2 s_kill=$3
+    shift 3
+    elapsed=$(($(secs) - started))
+    if [ $((elapsed + s_cap)) -gt "$BUDGET_SECONDS" ]; then
+        echo "$w_name: skipped, its cap of $s_cap s would end the run after the budget of $BUDGET_SECONDS s (at $elapsed s now)" >>"$info"
+        status=1
+        return
+    fi
+    echo "$w_name: start_utc=$(now) cap=${s_cap}s" >>"$info"
+    s_t0=$(secs)
+    "$@" >"$OUT_DIR/stdout-$w_name.txt" 2>&1 &
+    child=$!
+    watchdog "$child" "$s_cap" "$s_kill" &
+    dog=$!
+    wait "$child"
+    rc=$?
+    wait "$dog" 2>/dev/null
+    child=
+    dog=
+    echo "$w_name: exit=$rc end_utc=$(now) seconds=$(($(secs) - s_t0))" >>"$info"
+    if [ "$s_kill" -gt 0 ]; then
+        [ "$rc" -eq 137 ] || [ "$rc" -eq 0 ] || status=1
+    else
+        [ "$rc" -eq 0 ] || status=1
+    fi
+}
+
+# step NAME CAP COMMAND...: run COMMAND, its output in toGround/stdout-NAME.txt,
+# stopped at CAP seconds.
+step() {
+    s_name=$1 s_c=$2
+    shift 2
+    run_step "$s_name" "$s_c" 0 "$@"
+}
+
+# step_kill NAME CAP KILL_AT COMMAND...: the same, killed without warning
+# (SIGKILL) at KILL_AT seconds, as a test of what survives a crash. Exit
+# code 137 is then the expected one.
+# shellcheck disable=SC2329 # for your experiment section
+step_kill() {
+    s_name=$1 s_c=$2 s_k=$3
+    shift 3
+    run_step "$s_name" "$s_c" "$s_k" "$@"
+}
+
+# ---- Your experiment: edit from here -----------------------------------------
+#
+# Keep the sum of the caps, plus a few seconds per step, under BUDGET_SECONDS.
+# Put work in counts (ticks, samples, iterations), not seconds, so the result
+# is the same on every host; the caps are only a safety net.
+#
+# remove_state FILE...                     state you resume from: removed first
+# step NAME CAP COMMAND...                 one step, stopped at CAP seconds
+# step_kill NAME CAP KILL_AT COMMAND...    one step, killed at KILL_AT seconds
+
+step baseline 60 ./workload --ticks 20000 --max-seconds 55 --cpu-percent 5 \
+    --memory-mb 128 --seed 1 --summary "$OUT_DIR/summary-baseline.txt"
+step second-seed 60 ./workload --ticks 20000 --max-seconds 55 --cpu-percent 5 \
+    --memory-mb 128 --seed 2 --summary "$OUT_DIR/summary-second-seed.txt"
+
+# ---- to here -----------------------------------------------------------------
+
+{
+    echo "--- processes at the end ---"
+    ps 2>/dev/null
+    echo "--- toGround ---"
+    ls -l "$OUT_DIR" 2>/dev/null
+    echo "end_utc=$(now) seconds=$(($(secs) - started)) status=$status"
+} >>"$info"
+exit "$status"

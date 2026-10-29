@@ -1,0 +1,58 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: shellcheck and checker tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: shellcheck
+        run: shellcheck -s sh template/run scripts/*.sh tests/harness.sh
+      - name: check-package.py tests
+        run: python3 -m unittest discover -s tests -v
+
+  harness:
+    name: template/run under sh, dash and busybox sh
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install busybox
+        run: sudo apt-get update && sudo apt-get install -y busybox
+      - name: Harness behaves as documented
+        run: tests/harness.sh sh dash "busybox sh"
+
+  package:
+    name: build, package, run twice on 32-bit ARM, check against the prediction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm
+      - name: Build the example for the SEPP
+        run: scripts/build-example.sh
+      - name: Package
+        run: scripts/package.sh -n exp0000-example template/run build/workload template/README.txt LICENSE
+      - name: Run it twice in an Alpine armhf container, as user exp
+        run: scripts/test-local.sh dist/exp0000-example.tar.gz
+      - name: Check both runs against the prediction
+        run: |
+          d=$(ls -d test-results/*/ | head -1)
+          scripts/check-results.py prediction.example.toml "$d/run-1"
+          scripts/check-results.py prediction.example.toml "$d/run-2"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp0000-example
+          path: |
+            dist/exp0000-example.tar.gz
+            test-results/
