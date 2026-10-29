@@ -21,7 +21,7 @@ Do not publish ESA's image or README; they are ESA's.
 
 ## What emulation gets wrong
 
-On a laptop, the 32-bit ARM binary runs under emulation. That changes speed and CPU readings, and not always in the same direction. Measured for exp4051, scope as stated:
+On a laptop, the 32-bit ARM binary runs under emulation. That changes speed and CPU readings, and not always in the same direction. Measured in our runs, scope as stated:
 
 | Measure | Laptop, ESA's image under emulation (Apple silicon) | SEPP (FlatSat or orbit) |
 |---|---|---|

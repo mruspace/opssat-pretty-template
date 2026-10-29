@@ -1,6 +1,6 @@
 # The guide, step by step
 
-From the idea to the results of your run in orbit. Each step ends with a short checklist. The dates are what happened for exp4051 in October 2026; yours will differ. Where ESA tells you something different, follow ESA.
+From the idea to the results of your run in orbit. Each step ends with a short checklist. The dates are what happened in our runs in October 2026; yours will differ. Where ESA tells you something different, follow ESA.
 
 ## 0. Is PRETTY the right platform?
 
@@ -12,7 +12,7 @@ It fits an experiment that:
 - needs a real flight processor in a real space environment, not a radiation beam or a bench;
 - can say in advance what it will do, so the result means something.
 
-It does not fit an experiment that needs privileged access, long runs, or hardware you have not agreed with ESA. The platform has other payloads (a software-defined radio, a GNSS receiver, a dosimeter); what an experiment may use is ESA's decision. For exp4051, ESA told us the dosimeter and its data are not available to experimenters.
+It does not fit an experiment that needs privileged access, long runs, or hardware you have not agreed with ESA. The platform has other payloads (a software-defined radio, a GNSS receiver, a dosimeter); what an experiment may use is ESA's decision. ESA told us the dosimeter and its data are not available to experimenters.
 
 - [ ] The experiment fits five minutes, in user space.
 - [ ] You can write down what it will do before it runs.
@@ -23,7 +23,7 @@ Register at [opssat.esa.int/register](https://opssat.esa.int/register). The form
 
 If you plan to publish, say so and choose "not confidential". We did, and every result we published credits the ESA OPS-SAT Space Lab and TU Graz.
 
-For exp4051, ESA replied six days after the registration and offered a short introductory call. In the call they asked one sharp question: were the faults real hardware faults or simulated? Have a plain answer to that kind of question ready. They also set the rule that each run completes in five minutes or less.
+For us, ESA replied six days after the registration and offered a short introductory call. In the call they asked one sharp question: were the faults real hardware faults or simulated? Have a plain answer to that kind of question ready. They also set the rule that each run completes in five minutes or less.
 
 - [ ] Aim in one sentence; success described; outputs described.
 - [ ] Confidential or not, decided.
@@ -129,7 +129,7 @@ Send the package to ESA as they asked, with their subject tag and the addresses 
 
 ## 10. Sandbox and FlatSat results
 
-ESA runs the package in their software environment, then TU Graz runs it on the FlatSat, the flight processor on the bench. Results come back as an archive (see [docs/results.md](results.md)). For exp4051 the results of both tests came back one to two days after ESA accepted the package.
+ESA runs the package in their software environment, then TU Graz runs it on the FlatSat, the flight processor on the bench. Results come back as an archive (see [docs/results.md](results.md)). For our runs the results of both tests came back one to two days after ESA accepted the package.
 
 Check the FlatSat result against your prediction with `check-results.py`, then reply: the result matches, or what differs and why. **The FlatSat is your first real measurement of the SEPP**: timing, CPU share and memory are real here for the first time.
 

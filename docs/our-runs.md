@@ -1,6 +1,6 @@
-# exp4051, a worked example
+# Our three runs, a worked example
 
-Experiment exp4051 ran Mru Flight, fault-tolerance software that votes on three replicas, compares two and self-checks one, on OPS-SAT PRETTY three times in October 2026. Every run in orbit matched the prediction written to ESA before it. The packages, the run scripts and every file that came down are public in [mruspace/flight](https://github.com/mruspace/flight/tree/main/opssat).
+Our experiment ran Mru Flight, fault-tolerance software that votes on three replicas, compares two and self-checks one, on OPS-SAT PRETTY three times in October 2026. Every run in orbit matched the prediction written to ESA before it. The packages, the run scripts and every file that came down are public in [mruspace/flight](https://github.com/mruspace/flight/tree/main/opssat).
 
 ## Timeline
 
@@ -8,7 +8,7 @@ Experiment exp4051 ran Mru Flight, fault-tolerance software that votes on three 
 |---|---|
 | October 7 | Registered on opssat.esa.int (mission OPS-SAT PRETTY, not confidential) |
 | October 13 | ESA replied and offered an introductory call |
-| October 14 | Call with ESA and TU Graz; experiment confirmed as exp4051; development environment received (link valid three days) |
+| October 14 | Call with ESA and TU Graz; experiment confirmed with its ID; development environment received (link valid three days) |
 | October 15 | Package v0.3.1 sent; ESA's software environment test passed |
 | October 16 | FlatSat test passed; one note from ESA (hidden macOS files, [pitfall 1](pitfalls.md#1-hidden-macos-files-in-the-archive)); go-ahead sent with the validated file |
 | **October 18** | **Run 1 in orbit**, 227 s: the shrinking quorum and fixed triple redundancy under the same injected faults |
