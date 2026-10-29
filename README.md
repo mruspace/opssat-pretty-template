@@ -9,7 +9,7 @@
 
 # OPS-SAT PRETTY experiment template
 
-A template and a step-by-step guide for running your own software experiment on ESA's OPS-SAT PRETTY satellite, from registration to the results in your hands. It comes from experiment exp4051, which ran Mru Flight in orbit three times in October 2026, each run as predicted. Part of [Mru](https://mru.space).
+A template and a step-by-step guide for running your own software experiment on ESA's OPS-SAT PRETTY satellite, from registration to the results in your hands. It comes from our own experiment, which ran Mru Flight in orbit three times in October 2026, each run as predicted. Part of [Mru](https://mru.space).
 
 > **Unofficial.** This is not an ESA or TU Graz product, and they have not reviewed it. It is what one experimenter learned. ESA's rules and documents are the authority: where this guide and ESA differ, follow ESA, and tell us so we can fix it.
 
@@ -23,7 +23,7 @@ A template and a step-by-step guide for running your own software experiment on 
 | [`scripts/check-package.py`](scripts/check-package.py) | Catches what costs a round trip: wrong owner, macOS metadata, a 64-bit or x86 binary, a bash script, a non-executable `run`. |
 | [`scripts/test-local.sh`](scripts/test-local.sh) | Runs the package as the runner does, in a 32-bit ARM container, twice in the same folder, with the five-minute limit checked. Works with ESA's own environment image once you have it. |
 | [`scripts/check-results.py`](scripts/check-results.py) | Reads the archive ESA sends back and checks it against the prediction you wrote before the run. |
-| [`docs/`](docs) | The guide, the rules, testing, predictions, results, pitfalls, email templates, and the exp4051 timeline as a worked example. |
+| [`docs/`](docs) | The guide, the rules, testing, predictions, results, pitfalls, email templates, and a timeline of our three runs as a worked example. |
 
 ## Quick start
 
@@ -53,7 +53,7 @@ flowchart LR
   H --> I[Results back:<br/>check against<br/>your prediction]
 ```
 
-Each step waits for the one before it to pass, and results come back after each test. For exp4051 it took eleven days from registration to the first run in orbit, and about two days from package to orbit for the next runs ([timeline](docs/exp4051.md)).
+Each step waits for the one before it to pass, and results come back after each test. For us it took eleven days from registration to the first run in orbit, and about two days from package to orbit for the next runs ([timeline](docs/our-runs.md)).
 
 ## The rules on one screen
 
@@ -87,11 +87,11 @@ All of them, with what to do: [docs/pitfalls.md](docs/pitfalls.md).
 5. [What comes back, and how to check it](docs/results.md)
 6. [Pitfalls](docs/pitfalls.md)
 7. [Email templates](docs/emails.md)
-8. [exp4051, a worked example](docs/exp4051.md)
+8. [Our three runs, a worked example](docs/our-runs.md)
 
 ## Questions or contributions
 
-Ran an experiment and learned something we missed? Pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Email [contact@mru.space](mailto:contact@mru.space).
+Ran an experiment and learned something we missed? Email [contact@mru.space](mailto:contact@mru.space): what happened, its source and date, and any evidence you can share. This repository does not take pull requests or issues; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

@@ -1,6 +1,6 @@
 # Pitfalls
 
-Every item here happened to us on exp4051 in October 2026, or nearly did. Each has what happened, why, and what catches it now.
+Every item here happened to us in our runs in October 2026, or nearly did. Each has what happened, why, and what catches it now.
 
 ### 1. Hidden macOS files in the archive
 

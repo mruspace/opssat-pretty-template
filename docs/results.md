@@ -2,7 +2,7 @@
 
 ## How it arrives
 
-For exp4051, after each test ESA emailed a link to a shared folder. **The link was valid for three days**: download at once. The folder held a zip with one archive per test:
+For our runs, after each test ESA emailed a link to a shared folder. **The link was valid for three days**: download at once. The folder held a zip with one archive per test:
 
 | Archive | From |
 |---|---|
@@ -21,10 +21,10 @@ chg/toGround/...       what your run changed under $HOME: your outputs
 The journal shows the runner around your run, for example:
 
 ```
-Oct 28 09:12:59 sepp1 systemd[1]: Starting Experiment 4051...
-Oct 28 09:12:59 sepp1 spawn[2692]: starting experiment 4051
-Oct 28 09:12:59 sepp1 systemd[1]: Started Experiment 4051.
-Oct 28 09:15:29 sepp1 systemd-machined[2715]: Machine exp-4051 terminated.
+Oct 28 09:12:59 sepp1 systemd[1]: Starting Experiment NNNN...
+Oct 28 09:12:59 sepp1 spawn[2692]: starting experiment NNNN
+Oct 28 09:12:59 sepp1 systemd[1]: Started Experiment NNNN.
+Oct 28 09:15:29 sepp1 systemd-machined[2715]: Machine exp-NNNN terminated.
 ```
 
 A process your experiment kills on purpose can show here as a "Killed" line. Name it in your operator note so nobody reads it as a failure.

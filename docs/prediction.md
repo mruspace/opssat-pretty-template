@@ -43,12 +43,12 @@ Put the main numbers in plain words in the email that carries the package, for e
 
 > For the record before the run: zero wrong results in every segment; about 340 correct results in segment 1, with the quorum down to its last replica; 239 for fixed triple redundancy, then a detected disagreement on every cycle; and one restore in segment 3, with the retired replica still retired.
 
-That was the prediction for exp4051's run 3. In orbit: 342, 0 wrong; 239, then a detected disagreement on every cycle; one restore, the retired replica still retired.
+That was the prediction for our run 3. In orbit: 342, 0 wrong; 239, then a detected disagreement on every cycle; one restore, the retired replica still retired.
 
 ## When a prediction can go two ways
 
-Say so before the run. On exp4051's run 3, a rule in our code could withhold one cycle at a planned kill if the processor was busy at that moment. It did on the FlatSat and did not in orbit; the counts were the same either way, and we had predicted the counts, not the cycle. Predict what holds in both cases.
+Say so before the run. On our run 3, a rule in our code could withhold one cycle at a planned kill if the processor was busy at that moment. It did on the FlatSat and did not in orbit; the counts were the same either way, and we had predicted the counts, not the cycle. Predict what holds in both cases.
 
 ## Keep a scorecard
 
-After the run, list each predicted item with what came down. For exp4051's run 1: the same events on the same ticks (yes), about 2,700 correct for the shrinking quorum (2,745), 239 for fixed triple redundancy (239), zero wrong (0), about 225 seconds (227), no unexpected upset line (none).
+After the run, list each predicted item with what came down. For our run 1: the same events on the same ticks (yes), about 2,700 correct for the shrinking quorum (2,745), 239 for fixed triple redundancy (239), zero wrong (0), about 225 seconds (227), no unexpected upset line (none).
