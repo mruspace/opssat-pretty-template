@@ -11,7 +11,7 @@
 
 A template and a step-by-step guide for running your own software experiment on ESA's OPS-SAT PRETTY satellite, from registration to the results in your hands. It comes from our own experiment, which ran Mru Flight in orbit three times in October 2026, each run as predicted. Part of [Mru](https://mru.space).
 
-> **Unofficial.** This is not an ESA or TU Graz product, and they have not reviewed it. It is what one experimenter learned. ESA's rules and documents are the authority: where this guide and ESA differ, follow ESA, and tell us so we can fix it.
+> **Unofficial.** This is not an ESA or TU Graz product, and they have not reviewed it. ESA's rules and documents are the authority: where this guide and ESA differ, follow ESA, and tell us so we can fix it.
 
 ## What you get
 
