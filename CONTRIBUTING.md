@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest. This template is what one experimenter learned on OPS-SAT PRETTY. If you ran an experiment and found something it misses, a rule that changed, or a pitfall we did not hit, tell us and the next team gains from it.
+Thank you for your interest. If you ran an experiment and found something it misses, a rule that changed, or a pitfall we did not hit, tell us and the next team gains from it.
 
 This repository does not take pull requests or issues. Email [contact@mru.space](mailto:contact@mru.space) instead.
 
