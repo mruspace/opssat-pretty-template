@@ -1,6 +1,6 @@
 # The guide, step by step
 
-From the idea to the results of your run in orbit. Each step ends with a short checklist. The dates are what happened in our runs in October 2026; yours will differ. Where ESA tells you something different, follow ESA.
+From the idea to the results of your run in orbit. Each step ends with a short checklist. The dates are what happened in our runs in October and November 2026; yours will differ. Where ESA tells you something different, follow ESA.
 
 ## 0. Is PRETTY the right platform?
 
