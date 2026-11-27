@@ -1,6 +1,6 @@
 # Rules of the experiment environment
 
-What the package must be and how it runs, as we met it in October 2026. Sources: ESA's README for the OPS-SAT PRETTY experiment development environment (v0.3, dated January 15, 2026), our introduction meeting with ESA (October 14, 2026), and what we saw in three runs. ESA's current documents are the authority; check every line against what ESA sends you.
+What the package must be and how it runs, as we met it in October 2026. Sources: ESA's README for the OPS-SAT PRETTY experiment development environment (v0.3, dated January 15, 2026), our introduction meeting with ESA (October 14, 2026), and what we saw in four runs. ESA's current documents are the authority; check every line against what ESA sends you.
 
 ## The package
 
